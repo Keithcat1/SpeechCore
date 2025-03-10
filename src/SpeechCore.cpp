@@ -1,4 +1,4 @@
-#define __SPEECH_C_EXPORT
+//#define __SPEECH_C_EXPORT
 #include <memory>
 #include <vector>
 #ifdef _WIN32
