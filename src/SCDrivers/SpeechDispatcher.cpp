@@ -1,11 +1,13 @@
 #include "SpeechDispatcher.h"
-#ifdef __linux__ || __unix__
+#if defined(__linux__) || defined(__unix__)
 #include <dlfcn.h>
 #endif // __linux__ || __unix__
+#include <stdlib.h>
 
 #include <cstring>
 #include <cwchar>
 #include <vector>
+
 
 SpeechDispatcher::SpeechDispatcher()
     : ScreenReader(L"Speech Dispatcher", SC_HAS_SPEECH | SC_SPEECH_PARAMETER_CONTROL),
