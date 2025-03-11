@@ -127,9 +127,8 @@ elseif(PLATFORM STREQUAL "macos")
     set_property(TARGET SpeechCore PROPERTY XCODE_ATTRIBUTE_CLANG_ENABLE_OBJC_ARC YES)
     
     # Set macOS architectures and minimum version
-    target_compile_options(SpeechCore PRIVATE -arch x86_64 -arch arm64 -mmacosx-version-min=10.14)
-    target_link_options(SpeechCore PRIVATE -arch x86_64 -arch arm64)
-    
+    target_compile_options(SpeechCore PRIVATE -mmacosx-version-min=10.14)
+
     # Add Objective-C/C++ compile rules
     set_property(TARGET SpeechCore PROPERTY OBJCXX_EXTENSIONS ON)
     set_source_files_properties(
