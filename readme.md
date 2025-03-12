@@ -15,9 +15,14 @@ SpeechCore is a cross-platform C++ library that abstracts the process of communi
 4. Include `SpeechCore.h` in your project.
 
 ## Building
-
-The GitHub repo includes a Visual Studio solution and a SConstruct file. If you're using a different build system, keep the following notes in mind:
-
+### With CMake
+You need CMake, on get it through chocolatey, scoop, apt or brue depending on your platform. Then git clone the repo and:
+```bash
+cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DSPEECH_CORE_SCREEN_READER_APIS=ON ..
+ninja build
+```
+The SPEECH_CORE_INSTALL_SCREEN_READER_APIS option is optional and causes `ninja install` to copy the Windows DLLs used to interface with screen readers into the bin folder.
+### Manually
 * Define either `__SPEECH_C_EXPORT` (shared) or `SPEECH_C_STATIC` (static) when compiling.
 * JNI files are included for Java support. Ensure you have the required Java files, or exclude them if not needed.
 * Include only platform-specific files for your target platform.

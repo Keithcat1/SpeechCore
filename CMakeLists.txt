@@ -14,6 +14,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(WITH_JAVA "Enable Java support" ON)
 option(CLEANUP_BUILD "Clean up build files" OFF)
+option(SPEECH_CORE_INSTALL_SCREEN_READER_APIS "Install screen reader API dynamic libraries (currently windows only)" ON)
 
 # Architecture detection
 include(CheckCXXCompilerFlag)
@@ -238,3 +239,29 @@ install(TARGETS SpeechCore
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+# NVDAControllerClient ETC
+if(WIN32 AND SPEECH_CORE_INSTALL_SCREEN_READER_APIS)
+  # Check architecture to determine which DLL path to use
+  if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    # 64-bit architecture
+    set(DLL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/bin/x64")
+  else()
+    # 32-bit architecture
+    set(DLL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/bin/x86")
+  endif()
+
+  # Check if the DLL directory exists
+  if(EXISTS "${DLL_SOURCE_DIR}")
+    # Get all DLLs
+    file(GLOB DLL_FILES "${DLL_SOURCE_DIR}/*.dll")
+    
+    # Install DLLs to the bin directory
+    install(
+      FILES ${DLL_FILES}
+      DESTINATION bin
+      COMPONENT Runtime
+    )
+  else()
+    message(WARNING "DLL directory not found: ${DLL_SOURCE_DIR}")
+  endif()
+endif()
