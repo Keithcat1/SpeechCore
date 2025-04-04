@@ -13,7 +13,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Options
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(WITH_JAVA "Enable Java support" ON)
-option(CLEANUP_BUILD "Clean up build files" OFF)
 option(SPEECH_CORE_INSTALL_SCREEN_READER_APIS "Install screen reader API dynamic libraries (currently windows only)" ON)
 
 # Architecture detection
@@ -223,13 +222,6 @@ endforeach()
 # Add sources to the library target
 target_sources(SpeechCore PRIVATE ${SOURCES})
 
-# Custom command to clean up build files if requested
-if(CLEANUP_BUILD)
-    add_custom_command(TARGET SpeechCore POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E remove_directory ${CMAKE_BINARY_DIR}/build
-        COMMENT "Cleaning up build files"
-    )
-endif()
 
 # Installation rules
 include(GNUInstallDirs)
