@@ -12,6 +12,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Options
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+option(SPEECH_CORE_BUILD_EXAMPLES "Build the C and C++ examples" OFF)
+
 option(WITH_JAVA "Enable Java support" ON)
 option(SPEECH_CORE_INSTALL_SCREEN_READER_APIS "Install screen reader API dynamic libraries (currently windows only)" ON)
 
@@ -65,8 +67,6 @@ target_include_directories(SpeechCore PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include
 
 # Common definitions
 target_compile_definitions(SpeechCore PRIVATE UNICODE _UNICODE)
-
-
 
 
 
@@ -163,6 +163,17 @@ if(WITH_JAVA)
         message(STATUS "Java not found. Disabling Java support.")
         set(WITH_JAVA OFF)
     endif()
+endif()
+
+if(SPEECH_CORE_BUILD_EXAMPLES)
+add_executable(ExampleC
+	"examples/c/example.c"
+)
+target_link_libraries(ExampleC SpeechCore)
+add_executable(ExampleC++
+	"examples/c++/example.cpp"
+)
+target_link_libraries(ExampleC++ SpeechCore)
 endif()
 
 # Platform-specific file exclusions
