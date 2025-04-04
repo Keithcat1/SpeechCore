@@ -125,7 +125,7 @@ extern "C" {
 	 * @param _interrupt Whether to interrupt the current speech segment. Default is false.
 	 * @return A bool indicating if the operation was successful.
 	 */
-	SPEECH_C_API bool Speech_Output(const wchar_t* text, bool _interrupt = false);
+	SPEECH_C_API bool Speech_Output(const wchar_t* text, bool _interrupt);
 
 	/**
 	 * @brief Outputs a given string to the braille display if supported.
@@ -290,7 +290,7 @@ extern "C" {
 	 * @param _interrupt A boolean indicating whether to interrupt any ongoing speech. Default is false.
 	 * @param _xml A boolean indicating whether the input text contains SSML markup. Default is false.
 	 */
-	SPEECH_C_API void Sapi_Speak(const wchar_t* text, bool _interrupt = false, bool _xml = false);
+	SPEECH_C_API void Sapi_Speak(const wchar_t* text, bool _interrupt, bool _xml);
 
 	/**
 	 * @brief Outputs the given text to an audio file using the SAPI voice.
@@ -298,7 +298,7 @@ extern "C" {
 	 * @param text A const wchar_t string representing the text to be converted to speech.
 	 * @param _xml A boolean indicating whether the input text contains SSML markup. Default is false.
 	 */
-	SPEECH_C_API void Sapi_Output_File(const char* filename, const wchar_t* text, bool _xml = false);
+	SPEECH_C_API void Sapi_Output_File(const char* filename, const wchar_t* text, bool _xml);
 
 	/**
 	 * @brief Pauses the current SAPI speech output.
