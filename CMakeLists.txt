@@ -114,12 +114,12 @@ target_compile_definitions(SpeechCore PRIVATE UNICODE _UNICODE)
 
 # Handle build mode specific flags
 if(BUILD_SHARED_LIBS)
-    target_compile_definitions(SpeechCore PRIVATE __SPEECH_C_EXPORT)
+    target_compile_definitions(SpeechCore PUBLIC __SPEECH_C_EXPORT)
     if(NOT WIN32 AND (PLATFORM STREQUAL "linux" OR PLATFORM STREQUAL "macos"))
         target_compile_options(SpeechCore PRIVATE -fPIC)
     endif()
 else()
-    target_compile_definitions(SpeechCore PRIVATE __SPEECH_C_STATIC)
+    target_compile_definitions(SpeechCore PUBLIC __SPEECH_C_STATIC)
 endif()
 
 # Compiler-specific options
@@ -216,6 +216,11 @@ add_executable(ExampleC++
 	"examples/c++/example.cpp"
 )
 target_link_libraries(ExampleC++ SpeechCore)
+	if(SPEECH_CORE_STATIC_SCREEN_READER_APIS)
+	set_target_properties(ExampleC PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded")
+	set_target_properties(ExampleC++ PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded")
+
+endif()
 endif()
 
 # Platform-specific file exclusions
