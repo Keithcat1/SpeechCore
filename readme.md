@@ -23,6 +23,7 @@ ninja build
 ```
 The SPEECH_CORE_INSTALL_SCREEN_READER_APIS option is optional and causes `ninja install` to copy the Windows DLLs used to interface with screen readers into the bin folder.
 There is also `SPEECH_CORE_STATIC_SCREEN_READER_APIS`, which statically links these DLLs for you, currently only NVDA is supported. This means you don't have to coppy them around with your application. This currently requires that you statically link with the C runtime library. CMake should do this automatically if you enable this option, but if you're manually linking it might not and the linker will explode, so compile your .c and .cpp files with /MT.
+You can build some examples with `SPEECH_CORE_BUILD_EXAMPLES` option set to ON.
 
 ### Manually
 * Define either `__SPEECH_C_EXPORT` (shared) or `SPEECH_C_STATIC` (static) when compiling.
