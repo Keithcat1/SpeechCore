@@ -16,12 +16,14 @@ SpeechCore is a cross-platform C++ library that abstracts the process of communi
 
 ## Building
 ### With CMake
-You need CMake, on get it through chocolatey, scoop, apt or brue depending on your platform. Then git clone the repo and:
+You need CMake, get it through chocolatey, scoop, apt or brue depending on your platform. Then git clone the repo and:
 ```bash
 cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DSPEECH_CORE_SCREEN_READER_APIS=ON ..
 ninja build
 ```
 The SPEECH_CORE_INSTALL_SCREEN_READER_APIS option is optional and causes `ninja install` to copy the Windows DLLs used to interface with screen readers into the bin folder.
+There is also `SPEECH_CORE_STATIC_SCREEN_READER_APIS`, which statically links these DLLs for you, currently only NVDA is supported. This means you don't have to coppy them around with your application. This currently requires that you statically link with the C runtime library. CMake should do this automatically if you enable this option, but if you're manually linking it might not and the linker will explode, so compile your .c and .cpp files with /MT.
+
 ### Manually
 * Define either `__SPEECH_C_EXPORT` (shared) or `SPEECH_C_STATIC` (static) when compiling.
 * JNI files are included for Java support. Ensure you have the required Java files, or exclude them if not needed.
