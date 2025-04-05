@@ -3,11 +3,6 @@
 #include <comdef.h>
 #include "SCDriver.h"
 #include "../ThirdParty/fsapi.h"
-#ifdef _WIN64
-#define JAWS_MODULE L"jfwapi64.dll"
-#else
-#define JAWS_MODULE L"jfwapi32.dll"
-#endif
 
 class ScreenReaderJaws : public ScreenReader {
 private:
