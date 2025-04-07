@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.14)
 
 # Project configuration
 project(SpeechCore 
@@ -14,50 +14,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 option(SPEECH_CORE_BUILD_EXAMPLES "Build the C and C++ examples" OFF)
 
-option(WITH_JAVA "Enable Java support" OFF)
+option(WITH_JAVA "Enable Java support" ON)
 option(SPEECH_CORE_INSTALL_SCREEN_READER_APIS "Install screen reader API dynamic libraries (currently windows only)" ON)
-option(SPEECH_CORE_STATIC_SCREEN_READER_APIS "Statically link to screen reader API libraries (currently windows only)" OFF)
-
-
-# find bin and lib paths
-set(STATIC_LIB_ARCH_PATH "")
-set(DYNAMIC_LIB_ARCH_PATH "")
-
-# First determine bitness using CMAKE_SIZEOF_VOID_P which works correctly
-# even when cross-compiling 32-bit on 64-bit Windows
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	# 64-bit build - now determine if it's x64 or ARM64
-	if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64" OR CMAKE_SYSTEM_PROCESSOR MATCHES "arm64" OR 
-	(MSVC AND CMAKE_SYSTEM_PROCESSOR MATCHES "ARM64"))
-		set(DYNAMIC_LIB_ARCH_PATH "${CMAKE_CURRENT_SOURCE_DIR}/bin/arm64")
-		set(STATIC_LIB_ARCH_PATH "${CMAKE_CURRENT_SOURCE_DIR}/lib/arm64")
-	else()
-		# Default 64-bit is x64
-		set(DYNAMIC_LIB_ARCH_PATH "${CMAKE_CURRENT_SOURCE_DIR}/bin/x64")
-		set(STATIC_LIB_ARCH_PATH "${CMAKE_CURRENT_SOURCE_DIR}/lib/x64")
-	endif()
-elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
-	# 32-bit build is x86
-	set(DYNAMIC_LIB_ARCH_PATH "${CMAKE_CURRENT_SOURCE_DIR}/bin/x86")
-	set(STATIC_LIB_ARCH_PATH "${CMAKE_CURRENT_SOURCE_DIR}/lib/x86")
-else()
-	message(ERROR "Unknown pointer size: ${CMAKE_SIZEOF_VOID_P}. Library path not set correctly.")
-endif()
-
-if(NOT EXISTS "${DYNAMIC_LIB_ARCH_PATH}")
-    message(ERROR "Library directory '${DYNAMIC_LIB_ARCH_PATH}' does not exist!")
-endif()
-
-if(NOT EXISTS "${STATIC_LIB_ARCH_PATH}")
-    message(ERROR "Library directory '${STATIC_LIB_ARCH_PATH}' does not exist!")
-endif()
-
-
-
-
-
-
-
 
 # Architecture detection
 include(CheckCXXCompilerFlag)
@@ -275,13 +233,6 @@ endforeach()
 # Add sources to the library target
 target_sources(SpeechCore PRIVATE ${SOURCES})
 
-if(WIN32 AND SPEECH_CORE_STATIC_SCREEN_READER_APIS)
-	target_compile_definitions(SpeechCore PRIVATE SPEECH_CORE_STATIC_SCREEN_READER_APIS)
-	add_library(NvdaControllerClientStatic STATIC IMPORTED)
-	set_target_properties(NvdaControllerClientStatic PROPERTIES IMPORTED_LOCATION "${STATIC_LIB_ARCH_PATH}/nvdaControllerClient_static.lib")
-	target_link_libraries(SpeechCore PRIVATE NvdaControllerClientStatic rpcrt4)
-	set_target_properties(SpeechCore PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded")
-endif()
 
 # Installation rules
 include(GNUInstallDirs)
@@ -293,22 +244,27 @@ install(TARGETS SpeechCore
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 # NVDAControllerClient ETC
 if(WIN32 AND SPEECH_CORE_INSTALL_SCREEN_READER_APIS)
-	if(SPEECH_CORE_STATIC_SCREEN_READER_APIS)
-    file(GLOB DLL_FILES "${STATIC_LIB_ARCH_PATH}/*_static.lib")
+  # Check architecture to determine which DLL path to use
+  if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    # 64-bit architecture
+    set(DLL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/bin/x64")
+  else()
+    # 32-bit architecture
+    set(DLL_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/bin/x86")
+  endif()
+
+  # Check if the DLL directory exists
+  if(EXISTS "${DLL_SOURCE_DIR}")
+    # Get all DLLs
+    file(GLOB DLL_FILES "${DLL_SOURCE_DIR}/*.dll")
     
-    
+    # Install DLLs to the bin directory
     install(
       FILES ${DLL_FILES}
-      DESTINATION lib
-      COMPONENT Development
+      DESTINATION bin
+      COMPONENT Runtime
     )
-else()
-		file(GLOB DLL_FILES "${DYNAMIC_LIB_ARCH_PATH}/*.dll")
-		# Install DLLs to the bin directory
-		install(
-			FILES ${DLL_FILES}
-			DESTINATION bin
-			COMPONENT Runtime
-		)
-	endif()
+  else()
+    message(WARNING "DLL directory not found: ${DLL_SOURCE_DIR}")
+  endif()
 endif()
