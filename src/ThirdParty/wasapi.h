@@ -119,6 +119,7 @@ public:
 	}
 
 private:
+	virtual ~NotificationClient();
 	LONG refCount = 0;
 	unsigned int defaultDeviceChangeCount = 0;
 	unsigned int deviceStateChangeCount = 0;
@@ -129,7 +130,7 @@ class WasapiPlayer {
 public:
 	using ChunkCompletedCallback = void(*)(WasapiPlayer* player, unsigned int id);
 
-	WasapiPlayer(wchar_t* deviceName, WAVEFORMATEX format, ChunkCompletedCallback callback);
+	WasapiPlayer(WAVEFORMATEX format, wchar_t* deviceName, ChunkCompletedCallback callback);
 	HRESULT open(bool force = false);
 	HRESULT feed(unsigned char* data, unsigned int size, unsigned int* id);
 	HRESULT stop();

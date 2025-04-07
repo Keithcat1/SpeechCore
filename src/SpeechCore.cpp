@@ -12,13 +12,13 @@
 
 using namespace std;
 
-extern bool IS_LOADED = false;
-extern bool PREFER_SAPI = false;
+bool IS_LOADED = false;
+bool PREFER_SAPI = false;
 #ifdef _WIN32
-extern Sapi5Speech* sapi5 = nullptr;
-extern ScreenReaderSapi5* sapi5_driver = nullptr;
+Sapi5Speech* sapi5 = nullptr;
+ScreenReaderSapi5* sapi5_driver = nullptr;
 #endif // _WIN32
-extern ScreenReader* current_driver = nullptr;
+ScreenReader* current_driver = nullptr;
 vector<ScreenReader*> drivers;
 
 #ifdef _WIN32

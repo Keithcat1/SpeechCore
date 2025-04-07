@@ -26,11 +26,11 @@ const IID IID_IAudioStreamVolume = __uuidof(IAudioStreamVolume);
 const IID IID_IPropertyStore = __uuidof(IPropertyStore);
 NotificationClientPtr notificationClient;
 
-WasapiPlayer::WasapiPlayer(wchar_t* deviceName, WAVEFORMATEX format, ChunkCompletedCallback callback)
-	: deviceName(deviceName), format(format), callback(callback) {
+WasapiPlayer::WasapiPlayer(WAVEFORMATEX format, wchar_t* deviceName, ChunkCompletedCallback callback)
+	: format(format), deviceName(deviceName), callback(callback) {
 	wakeEvent = CreateEvent(nullptr, false, false, nullptr);
 	IMMDeviceEnumeratorPtr enumerator;
-	HRESULT hr = enumerator.CreateInstance(CLSID_MMDeviceEnumerator);
+	enumerator.CreateInstance(CLSID_MMDeviceEnumerator);
 	notificationClient = new NotificationClient();
 	enumerator->RegisterEndpointNotificationCallback(notificationClient);
 

@@ -2,7 +2,7 @@
 
 ScreenReaderSapi5::ScreenReaderSapi5(Sapi5Speech *sapi_instance):
 	ScreenReader(L"Sapi5",SC_VOICE_CONFIG|SC_SPEECH_FLOW_CONTROL|SC_SPEECH_PARAMETER_CONTROL|SC_FILE_OUTPUT),
-	loaded(false),Is_Active(false),module(sapi_instance) {
+	module(sapi_instance),loaded(false),Is_Active(false) {
 
 }
 ScreenReaderSapi5::~ScreenReaderSapi5() {
