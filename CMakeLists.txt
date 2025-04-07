@@ -123,19 +123,14 @@ else()
 endif()
 
 # Compiler-specific options
-if(COMPILER STREQUAL "msvc")
-    target_compile_options(SpeechCore PRIVATE /EHsc)
+if(CMAKE_CXX_COMPILER_ID MATCHES "msvc")
+    target_compile_options(MyTarget PRIVATE /wd4996)
     target_compile_definitions(SpeechCore PRIVATE _CRT_SECURE_NO_WARNINGS)
-elseif(COMPILER STREQUAL "clang")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "clang")
     target_compile_options(SpeechCore PRIVATE 
         -Wall -Wextra 
         -Wno-extern-initializer -Wno-unused-parameter -Wno-deprecated-declarations)
-    
-    if(APPLE)
-        target_compile_options(SpeechCore PRIVATE 
-            -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk)
-    endif()
-elseif(COMPILER STREQUAL "gcc")
+elseif(CMAKE_CXX_COMPILER_ID MATCHES "gcc")
     target_compile_options(SpeechCore PRIVATE 
         -Wall -Wextra -Wno-extern-initializer -Wno-unused-parameter)
 endif()
